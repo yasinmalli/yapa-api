@@ -1,20 +1,23 @@
 import Koa from 'koa';
 import Router from "koa-router";
 
+import { Inject } from "typescript-ioc";
 import config from './config/development.json';
+import MainCategoryRoutes from './routes/MainCategoryRoutes';
 
 export default class App {
-    constructor() { }
+    constructor(
+        @Inject private mainCategoryRoutes: MainCategoryRoutes
+    ) { }
 
     public async createApp() {
-        const app: Koa = new Koa();
+        const app: Koa = new Koa();        
         const router: Router = new Router();
-           
-        router.get('/', async (ctx) => {
-            ctx.body = 'Hello World Yasin';
-        });
-        app.use(router.routes());
 
+        this.mainCategoryRoutes.register(router);
+
+        app.use(router.routes());
+        
         return Promise.resolve(app);
     }
 
