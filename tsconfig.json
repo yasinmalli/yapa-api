@@ -1,0 +1,37 @@
+{    
+    "compilerOptions": {
+        "lib": ["es5", "es6", "esnext.asynciterable"],
+        "outDir": "./build/",
+        "target": "es5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "sourceRoot": "./src/",
+        "removeComments": true,
+        "strict": true,
+        "importHelpers": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "declaration": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "stripInternal": true,
+        "pretty": true,
+        "strictNullChecks": true,
+        "noUnusedLocals": true,
+        "downlevelIteration": true,
+        "typeRoots": [
+            "./node_modules/@types"
+        ],
+        "resolveJsonModule": true,
+        "esModuleInterop": true 
+    },
+    "exclude": [        
+        "migrations",
+        "build",
+        "node_modules",
+        "scripts",
+        "test"
+    ]
+}

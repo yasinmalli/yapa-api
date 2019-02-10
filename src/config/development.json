@@ -1,0 +1,18 @@
+{
+    "logging": {
+        "loglevel": "debug"
+    },
+    "connectionstrings": {
+        "default": "Server=192.168.1.75;Port=5432;User Id=postgres;Password=Password1;Database=personal_db;"
+    },
+    "cors": {
+        "allowedorigins": "http://localhost:5000"
+    },
+    "aws": {
+        "profile": "default",
+        "region": "us-west-2"
+    },
+    "app": {
+        "port": 5000
+    }
+}
