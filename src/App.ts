@@ -1,6 +1,9 @@
 import Koa from 'koa';
-import Router from "koa-router";
+import Router from 'koa-router';
+import bodyParser from 'koa-bodyparser';
+import requestId from 'koa-requestid';
 
+import { createConnection } from "typeorm";
 import { Inject } from "typescript-ioc";
 import config from './config/development.json';
 import MainCategoryRoutes from './routes/MainCategoryRoutes';
@@ -11,13 +14,26 @@ export default class App {
     ) { }
 
     public async createApp() {
+        await createConnection({            
+            type: "postgres",
+            host: "192.168.1.75",
+            port: 5432,
+            username: "postgres",
+            password: "Password1",
+            database: "personal_db",
+            logging: true,            
+            entities: ["src/models/**/*.ts"]
+        });
+
         const app: Koa = new Koa();        
         const router: Router = new Router();
 
         this.mainCategoryRoutes.register(router);
 
+        app.use(requestId());
+        app.use(bodyParser());
         app.use(router.routes());
-        
+
         return Promise.resolve(app);
     }
 
