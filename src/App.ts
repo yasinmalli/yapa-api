@@ -7,10 +7,12 @@ import { createConnection } from "typeorm";
 import { Inject } from "typescript-ioc";
 import config from './config/development.json';
 import MainCategoryRoutes from './routes/MainCategoryRoutes';
+import ExpenseRoutes from './routes/ExpenseRoutes';
 
 export default class App {
     constructor(
-        @Inject private mainCategoryRoutes: MainCategoryRoutes
+        @Inject private mainCategoryRoutes: MainCategoryRoutes,
+        @Inject private expenseRoutes: ExpenseRoutes,
     ) { }
 
     public async createApp() {
@@ -29,6 +31,7 @@ export default class App {
         const router: Router = new Router();
 
         this.mainCategoryRoutes.register(router);
+        this.expenseRoutes.register(router);
 
         app.use(requestId());
         app.use(bodyParser());

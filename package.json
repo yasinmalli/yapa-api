@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/yasinmalli/yapa-api#readme",
   "dependencies": {
+    "guid-typescript": "^1.0.9",
+    "json2typescript": "^1.0.6",
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
     "koa-logger": "^3.2.0",

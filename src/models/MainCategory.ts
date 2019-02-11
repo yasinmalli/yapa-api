@@ -1,22 +1,31 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, Index, OneToMany} from "typeorm";
+import SubCategoryDAO from './SubCategory';
+import ExpenseDAO from './Expense'
 
 @Entity({name: "expense_main_category"})
 export default class MainCategoryDAO {
     
     @PrimaryGeneratedColumn()
-    private id: number;
+    @Index({ unique: true })
+    private id: bigint;
 
-    @Column()
+    @Column({ type: "varchar", length: 400, nullable: false })
     private name: string;
 
-    @Column()
+    @Column({ type: "varchar", length: 4000, nullable: true })
     private description: string;
 
-    public get $id(): number {
+    @OneToMany(type => SubCategoryDAO, subCategory => subCategory.mainCategory)
+    public subCategories: SubCategoryDAO[];
+
+    @OneToMany(type => ExpenseDAO, expense => expense.mainCategory)
+    public expenses: ExpenseDAO[]
+
+    public get $id(): bigint {
         return this.id;
     }
 
-    public set $id(value: number) {
+    public set $id(value: bigint) {
         this.id = value;
     }
 
@@ -36,7 +45,7 @@ export default class MainCategoryDAO {
         this.description = value;
     }
 
-    public static newMainCategory(obj: {id?: number, name?: string, description?: string}) {
+    public static newMainCategory(obj: {id?: bigint, name?: string, description?: string}) {
         const mainCategory = new MainCategoryDAO();
         
         if (obj.id) mainCategory.id = obj.id;

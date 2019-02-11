@@ -1,25 +1,36 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, Index, JoinColumn} from "typeorm";
+import MainCategoryDAO from './MainCategory';
+import ExpenseDAO from './Expense';
 
 @Entity({name: "expense_sub_category"})
+@Index(["id", "main_category_id"], { unique: true })
 export default class SubCategoryDAO {
     
     @PrimaryGeneratedColumn()
-    private id: number;
+    @Index({ unique: true })
+    private id: bigint;
 
-    @Column()
+    @Column({ type: "varchar", length: 400, nullable: false })
     private name: string;
 
-    @Column()
+    @Column({ type: "varchar", length: 4000, nullable: true })
     private description: string;
 
     @Column({name: "maincategoryid"})
-    private main_category_id: number;
+    private main_category_id: bigint;
 
-    public get $id(): number {
+    @ManyToOne(type => MainCategoryDAO, mainCategory => mainCategory.subCategories)
+    @JoinColumn({name: "maincategoryid", referencedColumnName: "id"})
+    public mainCategory: MainCategoryDAO;
+
+    @OneToMany(type => ExpenseDAO, expense => expense.subCategory)
+    public expenses: ExpenseDAO[]
+
+    public get $id(): bigint {
         return this.id;
     }
 
-    public set $id(value: number) {
+    public set $id(value: bigint) {
         this.id = value;
     }
 
@@ -39,15 +50,15 @@ export default class SubCategoryDAO {
         this.description = value;
     }
 
-    public get $main_category_id(): number {
+    public get $main_category_id(): bigint {
         return this.main_category_id;
     }
 
-    public set $main_category_id(value: number) {
+    public set $main_category_id(value: bigint) {
         this.main_category_id = value;
     }
 
-    public static newMainCategory(obj: {id?: number, name?: string, description?: string, main_category_id?: number}) {
+    public static newMainCategory(obj: {id?: bigint, name?: string, description?: string, main_category_id?: bigint}) {
         const subCategory = new SubCategoryDAO();
         
         if (obj.id) subCategory.id = obj.id;
