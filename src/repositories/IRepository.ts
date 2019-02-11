@@ -1,19 +1,19 @@
 import { getManager } from 'typeorm';
-import MainCategory from '../models/MainCategory';
-import SubCategory from '../models/SubCategory';
-import Expense from '../models/Expense';
+import { MainCategoryDAO } from '../models/MainCategory';
+import { SubCategoryDAO } from '../models/SubCategory';
+import { ExpenseDAO } from '../models/Expense';
 
 export default abstract class IRepository {
 
     protected getMainCategoryRepository() {
-        return getManager().getRepository(MainCategory);
+        return getManager().getRepository(MainCategoryDAO);
     }
 
     protected getSubCategoryRepository() {
-        return getManager().getRepository(SubCategory);
+        return getManager().getRepository(SubCategoryDAO);
     }
 
     protected getExpenseRepository() {
-        return getManager().getRepository(Expense);
+        return getManager().getRepository(ExpenseDAO);
     }
 }

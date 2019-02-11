@@ -1,5 +1,5 @@
 import IRepository from "./IRepository";
-import ExpenseDAO from "../models/Expense";
+import { ExpenseDAO } from "../models/Expense";
 
 export default class ExpenseRepository extends IRepository {
 
@@ -7,4 +7,7 @@ export default class ExpenseRepository extends IRepository {
         return this.getExpenseRepository().find();
     }
 
+    public async create(dao: ExpenseDAO): Promise<ExpenseDAO> {
+        return this.getExpenseRepository().save(dao);
+    }
 }

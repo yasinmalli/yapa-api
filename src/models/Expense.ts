@@ -6,10 +6,9 @@ import {
     ManyToOne,
     JoinColumn
 } from "typeorm";
-import MainCategoryDAO from './MainCategory';
-import SubCategoryDAO from './SubCategory';
+import { MainCategoryDAO } from './MainCategory';
+import { SubCategoryDAO } from './SubCategory';
 import { Guid } from 'guid-typescript';
-import {JsonObject, JsonProperty} from 'json2typescript';
 
 export enum ExpenseType {
     single = "single",
@@ -17,60 +16,58 @@ export enum ExpenseType {
     reoccuringYearly = "reoccuringYearly"
 }
 
-@JsonObject("Expense")
 @Entity({name: "expenses"})
-export default class ExpenseDAO {
-    @PrimaryGeneratedColumn({name: "id"})
-    @Index({ unique: true })
-    @JsonProperty("Id", String, false)
-    private _id: bigint;
-    get Id() { return this._id; }
-    set Id(value) { this._id = value }
+export class ExpenseDAO {
+    @PrimaryGeneratedColumn()
+    @Index({ unique: true })    
+    private id: bigint;
+    get Id() { return this.id; }
+    set Id(value) { this.id = value }
 
-    @Column({ type: "uuid", name: "expenseid", nullable: false })
-    private _expenseId: Guid;
-    get ExpenseId() { return this._expenseId; }
-    set ExpenseId(value) { this._expenseId = value }
+    @Column({ type: "uuid", name: "expenseid", nullable: false })    
+    private expense_id: string;
+    get ExpenseId() { return this.expense_id; }
+    set ExpenseId(value) { this.expense_id = value }
 
-    @Column({ type: "double precision", name: "price"})
-    private _price: number;
-    get Price() { return this._price; }
-    set Price(value) { this._price = value }
+    @Column({ type: "double precision" })
+    private price: number;
+    get Price() { return this.price; }
+    set Price(value) { this.price = value }
 
-    @Column({ name: "time" })
-    private _time: Date;
-    get Time() { return this._time; }
-    set Time(value) { this._time = value }
+    @Column()
+    private time: Date;
+    get Time() { return this.time; }
+    set Time(value) { this.time = value }
 
     @Column({ name: "createdon"})
-    private _createdOn: Date;
-    get CreatedOn() { return this._createdOn; }
-    set CreatedOn(value) { this._createdOn = value }
+    private createdOn: Date;
+    get CreatedOn() { return this.createdOn; }
+    set CreatedOn(value) { this.createdOn = value }
 
-    @Column({ name: "spentat"})
-    private _spentAt: string;
-    get SpentAt() { return this._spentAt; }
-    set SpentAt(value) { this._spentAt = value }
+    @Column({ name: "spentat", nullable: true})
+    private spent_at: string;
+    get SpentAt() { return this.spent_at; }
+    set SpentAt(value) { this.spent_at = value }
 
-    @Column({ type: "varchar", name: "description", length: 4000, nullable: true })
-    private _description: string;
-    get Description() { return this._description; }
-    set Description(value) { this._description = value }
+    @Column({ type: "varchar", length: 4000, nullable: true })
+    private description: string;
+    get Description() { return this.description; }
+    set Description(value) { this.description = value }
 
-    @Column({ type: "enum", enum: ExpenseType, default: ExpenseType.single, name: "expensetype" })
-    private _expenseType: ExpenseType
-    get ExpenseType() { return this._expenseType; }
-    set ExpenseType(value) { this._expenseType = value }
+    @Column({ type: "enum", enum: ExpenseType, default: ExpenseType.single, name: "expensetype", nullable: true })
+    private expense_type: ExpenseType
+    get ExpenseType() { return this.expense_type; }
+    set ExpenseType(value) { this.expense_type = value }
 
     @Column({name: "maincategoryid"})
-    private _mainCategoryId: bigint;
-    get MainCategoryId() { return this._mainCategoryId; }
-    set MainCategoryId(value) { this._mainCategoryId = value }
+    private main_category_id: bigint;
+    get MainCategoryId() { return this.main_category_id; }
+    set MainCategoryId(value) { this.main_category_id = value }
 
     @Column({name: "subcategoryid"})
-    private _subCategoryId: bigint;
-    get SubCategoryId() { return this._subCategoryId; }
-    set SubCategoryId(value) { this._subCategoryId = value }
+    private sub_category_id: bigint;
+    get SubCategoryId() { return this.sub_category_id; }
+    set SubCategoryId(value) { this.sub_category_id = value }
 
     @ManyToOne(type => MainCategoryDAO, mainCategory => mainCategory.expenses)
     @JoinColumn({name: "maincategoryid", referencedColumnName: "id"})
@@ -79,4 +76,50 @@ export default class ExpenseDAO {
     @ManyToOne(type => SubCategoryDAO, subCategory => subCategory.expenses)
     @JoinColumn({name: "subcategoryid", referencedColumnName: "id"})
     public subCategory: SubCategoryDAO;
+}
+
+export class Expense {
+    public Id: bigint;
+    public ExpenseId: string;
+    public Price: number;
+    public Time: string;
+    public CreatedOn: string;
+    public SpentAt: string;
+    public Description: string;
+    public ExpenseType: ExpenseType;
+    public MainCategoryId: bigint;
+    public SubCategoryId: bigint;
+
+    public static FromDAO(dao: ExpenseDAO): Expense {
+        return {
+            Id: dao.Id,
+            ExpenseId: dao.ExpenseId,
+            Price: dao.Price,
+            Time: dao.Time.toISOString(),
+            CreatedOn: dao.CreatedOn.toISOString(),
+            SpentAt: dao.SpentAt,
+            Description: dao.Description,
+            ExpenseType: dao.ExpenseType,
+            MainCategoryId: dao.MainCategoryId,
+            SubCategoryId: dao.SubCategoryId
+        };
+    }
+
+    public static ToDAO(resource: Expense): ExpenseDAO {
+        var now = new Date(Date.now());
+        let dao = new ExpenseDAO();
+
+        dao.ExpenseId = Guid.create().toString();
+        dao.Price = resource.Price;
+        dao.Time = now;
+        dao.CreatedOn = (resource.CreatedOn) ? new Date(resource.CreatedOn) : now;
+        dao.ExpenseType = (resource.ExpenseType) ? resource.ExpenseType : ExpenseType.single;
+        if (resource.Description) dao.Description = resource.Description;
+        if (resource.SpentAt) dao.SpentAt = resource.SpentAt;
+        if (resource.ExpenseType) dao.ExpenseType = resource.ExpenseType;
+        dao.MainCategoryId = resource.MainCategoryId;
+        dao.SubCategoryId = resource.SubCategoryId;
+
+        return dao;
+    }
 }

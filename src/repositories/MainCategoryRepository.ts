@@ -1,6 +1,6 @@
 import IRepository from "./IRepository";
-import MainCategoryDAO from '../models/MainCategory';
-import SubCategoryDAO from '../models/SubCategory';
+import { MainCategoryDAO } from '../models/MainCategory';
+import { SubCategoryDAO } from '../models/SubCategory';
 
 export default class MainCategoryRepository extends IRepository {
 
