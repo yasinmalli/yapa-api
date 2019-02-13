@@ -1,0 +1,13 @@
+  App:
+    logging:
+      loglevel: "info"        
+    port: 80
+    cors:
+      allowedorigins: "http://yasinmalli.com"
+    aws:
+      profile: "default"
+      region: "us-west-2"    
+  DB:
+    host: "192.168.1.75"
+    username: "$$SECRET$$"
+    password: "$$SECRET$$"

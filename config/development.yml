@@ -1,0 +1,16 @@
+  App:
+    logging:
+      loglevel: "debug"        
+    port: 5000
+    cors:
+      allowedorigins: "http://localhost:5000"
+    aws:
+      profile: "default"
+      region: "us-west-2"    
+  DB:
+    host: "192.168.1.75"
+    port: 5432
+    username: "postgres"
+    password: "Password1"
+    database: "personal_db"
+        
